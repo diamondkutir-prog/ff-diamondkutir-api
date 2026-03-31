@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const { uid } = req.query;
-  const key = 'YOUR_API_KEY_HERE'; // এখানে তোমার API Key বসাও
+  const key = 'OFyOH0VGtlIqiap2hMIxfu1PJd8le5XYjnw5cVQPFrM'; // এখানে তোমার API Key বসাও
 
   if (!uid) {
     return res.status(400).json({ name: 'UID দিন!' });
