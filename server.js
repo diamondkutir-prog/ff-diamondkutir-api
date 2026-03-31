@@ -2,7 +2,8 @@ const express = require("express");
 const axios = require("axios");
 const app = express();
 
-// Player Name API
+const API_KEY = "OFyOH0VGtlIqiap2hMIxfu1PJd8le5XYjnw5cVQPFrM"; // Gameskinbo API Key
+
 app.get("/player-info", async (req, res) => {
   const { uid } = req.query;
 
@@ -14,18 +15,23 @@ app.get("/player-info", async (req, res) => {
   const region = req.query.region || "BD";
 
   try {
-    // OB49 Free Fire API
-    const apiUrl = `https://info-ob49.vercel.app/api/account/?uid=${uid}&region=${region}`;
-    const response = await axios.get(apiUrl);
+    const apiUrl = `https://api.gameskinbo.com/ff-info/get?uid=${uid}&region=${region}`;
+    
+    const response = await axios.get(apiUrl, {
+      headers: {
+        "x-api-key": API_KEY
+      }
+    });
 
     // শুধু player নাম
-    const playerName = response.data?.username || "Unknown";
+    const playerName = response.data?.player?.nickname || "Unknown";
 
     res.status(200).json({
       success: true,
       region: region,
       username: playerName
     });
+
   } catch (err) {
     res.status(500).json({
       success: false,
