@@ -1,45 +1,29 @@
-const express = require("express");
-const axios = require("axios");
-const app = express();
-
-const API_KEY = "OFyOH0VGtlIqiap2hMIxfu1PJd8le5XYjnw5cVQPFrM"; // Gameskinbo API Key
-
-app.get("/player-info", async (req, res) => {
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Only GET allowed' });
+  }
+  
   const { uid } = req.query;
-
+  
   if (!uid) {
-    return res.status(400).json({ error: "UID দিতে হবে" });
+    return res.status(400).json({ error: 'UID দিন' });
   }
-
-  // Default region = BD
-  const region = req.query.region || "BD";
-
+  
   try {
-    const apiUrl = `https://api.gameskinbo.com/ff-info/get?uid=${uid}&region=${region}`;
+    const response = await fetch(`https://free-fire-api-x6wm.onrender.com/freefire/info/${uid}`);
     
-    const response = await axios.get(apiUrl, {
-      headers: {
-        "x-api-key": API_KEY
-      }
-    });
-
-    // শুধু player নাম
-    const playerName = response.data?.player?.nickname || "Unknown";
-
-    res.status(200).json({
-      success: true,
-      region: region,
-      username: playerName
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: "API fetch ত্রুটি",
-      details: err.message
-    });
+    if (response.ok) {
+      const data = await response.json();
+      const name = data.nickname || 'Player Not Found';
+      
+      return res.status(200).json({ 
+        name: name,
+        uid: uid 
+      });
+    } else {
+      return res.status(404).json({ name: 'Player Not Found' });
+    }
+  } catch (error) {
+    return res.status(500).json({ name: 'API Error' });
   }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+      }
