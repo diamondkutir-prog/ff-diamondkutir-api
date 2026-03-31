@@ -1,8 +1,5 @@
 {
-  "name": "ff-name-api",
+  "name": "ff-diamondkutir-api",
   "version": "1.0.0",
-  "scripts": {
-    "dev": "vercel dev"
-  },
-  "dependencies": {}
+  "type": "module"
 }
